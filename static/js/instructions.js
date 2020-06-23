@@ -25,11 +25,11 @@ var instructions_block = {
     '<p class="center-content">You will receive a small amount of real bonus money each time you see the dollar signs, and you will be shown your bonus after completing the experiment.</p>' +
     '<p class="center-content">Sometimes, you will receive a reward even if you make the incorrect response, but most of the time, only a correct response will lead to a reward. Not receiving a reward is a neutral outcome and has no effect on your bonus earnings.</p>' +
     '<table style="margin-left:auto;margin-right:auto;table-layout:fixed !important; width:650px;"><tr>' +
-    '<td><img src="static/img/test1-reward.PNG" style="width: 200px;"></td>' +
+    '<td><img src="static/img/test1-reward.PNG" border="10" style="width: 200px;"></td>' +
     '<td><img src="static/img/test1-neutral.PNG" style="height: 200px; "></td>' +
     '</tr><tr>' +
     '<td>Reward</td><td>Neutral Result</td>' +
-    '</tr></table>',
+    '</tr> <tr> A black outline indicates you pressed the space bar for that image.</tr></table>',
     //Instructions (page 4)
     '<p class="center-content">We will offer you a break halfway through the game.</p>' +
     '<p class="center-content">However, please note that nothing will change when you resume the game.</p>' +

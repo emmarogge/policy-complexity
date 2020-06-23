@@ -21,20 +21,30 @@ var practice_trial = {
   trial_duration: 2000,  // ms
   data: jsPsych.timelineVariable('data'),
   on_finish: function(data) {
+  	if (data.key_press == 32){
+  		console.log("KEY PRESSED");
+  	};
     data.correct = data.key_press == data.correct_response;
     trial_node_id = jsPsych.currentTimelineNodeID();
   }
 };
-var practice_feedback = {
-  type: 'image-keyboard-response',
+
+var practice_feedback = { 
+  type: 'html-keyboard-response',
   stimulus: function() {
     var prev_trial = jsPsych.data.getDataByTimelineNode(trial_node_id);
     var prev_trial_correct = prev_trial.select('correct').values[0];
     // Selects name without the .PNG to add overlaid $$$ or bar for reward and neutral
     var prev_trial_stim_file = prev_trial.select('stimulus').values[0];
     var prev_trial_stim = getStimStem(prev_trial_stim_file); 
-    console.log("prev_trial_stim: " + JSON.stringify(prev_trial_stim));
-    return (prev_trial_correct ? prev_trial_stim + '-reward.PNG' : prev_trial_stim + '-neutral.PNG');
+    var feedback_img = (prev_trial_correct ? prev_trial_stim + '-reward.PNG' : prev_trial_stim + '-neutral.PNG');
+    var feedback = prev_trial.select('key_press').values[0];
+    // Return the feedback with a border if the subject had 'Go' response/pressed space bar.
+    if (feedback == 32) {
+    	return '<img src="' + feedback_img + '" border="10px; grey">';
+    } else {
+    	return '<img src="' + feedback_img + '">';
+    }
   },
   choices: jsPsych.NO_KEYS,
   trial_duration: 1500  // ms

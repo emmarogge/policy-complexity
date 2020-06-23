@@ -65,10 +65,10 @@ var stimuli = [
 ];
 
   var timeline = [];
-  var num_trials_per_stim = 2; // TODO: Revert this after testing
+  var num_trials_per_stim = 40;
   var num_blocks = 2;
   
-  // /* Obtain consent */
+  /* Obtain consent */
   // var consent_block = check_consent();
   // timeline.push(consent_block);
 
@@ -76,7 +76,7 @@ var stimuli = [
   var instructions_block = create_instructions(timeline);
   timeline.push(instructions_block);
 
-  // /* Practice */
+  /* Practice */
   var practice_block = create_practice();
   var finish_practice = finish_practice();
   timeline.push(practice_block);
@@ -142,7 +142,7 @@ var stimuli = [
     ] 
   );
 
-  // Block 1 // Train
+  // Block 1
   var trial = {
     type: 'image-keyboard-response',
     stimulus: jsPsych.timelineVariable('stimulus'),
@@ -156,7 +156,7 @@ var stimuli = [
   };
 
   var feedback = {
-    type: 'image-keyboard-response',
+    type: 'html-keyboard-response',
     data: jsPsych.timelineVariable('data'),
     stimulus: function() {
       var prev_trial = jsPsych.data.getDataByTimelineNode(trial_node_id);
@@ -164,7 +164,15 @@ var stimuli = [
       var prev_trial_stim = getStimStem(prev_trial.select('stimulus').values[0]);
       // Select the reward probability function for given stimulus.
       var stim_reward_context = prev_trial.select('use_rew').values;
-      return getStochasticOutcome(prev_trial_stim, prev_trial_correct, stim_reward_context);
+      var feedback = prev_trial.select('key_press').values[0];
+      var outcome = getStochasticOutcome(prev_trial_stim, prev_trial_correct, stim_reward_context);
+      // Return the feedback with a border if the subject had 'Go' response/pressed space bar.
+      if (feedback == 32) {
+        console.log("OUTCOME: " + JSON.stringify(outcome));
+        return '<img src="' + outcome + '" border="10">';
+      } else {
+        return '<img src="' + outcome + '">';
+      }
     },
     choices: jsPsych.NO_KEYS,
     trial_duration: 1500,  // ms
@@ -201,7 +209,7 @@ var stimuli = [
   var between_block = {
     type: 'instructions',
     pages: [
-      '<p class="center-content">You have completed half of the game. Take a break if you would like and then press "Next" to continue.</p>'
+      '<p class="center-content">You have completed half of the game.</p> Take a break if you would like and then press "Next" to continue.</p>'
     ],
     show_clickable_nav: true
   };
@@ -281,30 +289,12 @@ var stimuli = [
   };
   timeline.push(save_data);
 
-  var urlVar = jsPsych.data.urlVariables();
-  var keyLink = "https://harvard.az1.qualtrics.com/jfe/form/SV_7PUKSqDsotwNiM5/?&workerId=" + turkInfo.workerId + "&assignmentId=" + turkInfo.assignmentId + "&hitId=" + turkInfo.hitId + "&a=" + urlVar.a + "&b=" + urlVar.b + "&c=" + urlVar.c;
-
-  /* Prompt to get unique key for obtaining bonus */ 
-  var delayitem = {
-    type: 'instructions',
-    pages: [
-      // Delay (page 1)
-      '<p class="center-content">Click to get your key.</p>',
-    ],
-    show_clickable_nav: true,
-    allow_backward: false,
-    show_page_number: false
-  };
-
-  timeline.push(delayitem);
-
   function startExperiment(){
-  // console.log("Timeline: " + JSON.stringify(timeline));
+  console.log("Timeline: " + JSON.stringify(timeline));
   jsPsych.init({
       timeline: timeline,
       on_finish: function() {
-        // saveData();
-        window.location.href = keyLink; 
+        saveData();
       }
     })
   };
